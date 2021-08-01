@@ -50,7 +50,7 @@ final class Run
         $this->generateMessage();
         $this->send();
 
-        if ($this->test === false) {
+        if (!$this->test) {
             file_put_contents($this->dbFile, json_encode($this->db, JSON_PRETTY_PRINT));
         }
     }
