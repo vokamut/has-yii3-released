@@ -54,17 +54,7 @@ final class Run
             file_put_contents($this->dbFile, json_encode($this->db, JSON_PRETTY_PRINT));
         }
     }
-    private function  pluralize (int $n, array $titles): string {
-        $index = 0;
-        if($n%10===1 && $n%100!==11) {
-            $index = 0;    
-        }else if ($n%10>=2 && $n%10<=4 && ($n%100<10 || $n%100>=20)) {
-                $index = 1;   
-        }else {
-            $index = 2;
-        }
-       return $titles[$index];
-    }
+
     private function generateMessage(): void
     {
         // Статус всех пакетов
@@ -150,11 +140,11 @@ final class Run
         $prMessages = [];
 
         if ($issueOpened !== 0) {
-            $issueMessages[] = ' ' . $issueOpened .' ' . $this->pluralize($issueOpened,['открыт','открыто','открытых']);
+            $issueMessages[] = ' ' . $issueOpened . ' ' . $this->pluralize($issueOpened, ['открыт', 'открыто', 'открытых']);
         }
 
         if ($issueClosed !== 0) {
-            $issueMessages[] = ' ' . $issueClosed .' ' . $this->pluralize($issueClosed,['закрыт','закрыто','закрытых']);
+            $issueMessages[] = ' ' . $issueClosed . ' ' . $this->pluralize($issueClosed, ['закрыт', 'закрыто', 'закрытых']);
         }
 
         $this->message .= PHP_EOL . 'Issue:';
@@ -166,15 +156,15 @@ final class Run
         }
 
         if ($prOpened !== 0) {
-            $prMessages[] = ' ' . $prOpened .' ' . $this->pluralize($prOpened,['открыт','открыто','открытых']);
+            $prMessages[] = ' ' . $prOpened . ' ' . $this->pluralize($prOpened, ['открыт', 'открыто', 'открытых']);
         }
 
         if ($prMerged !== 0) {
-            $prMessages[] = ' ' . $prMerged . ' ' . $this->pluralize($prMerged,['принят','принято','принятых']);
+            $prMessages[] = ' ' . $prMerged . ' ' . $this->pluralize($prMerged, ['принят', 'принято', 'принятых']);
         }
 
         if ($prClosed !== 0) {
-            $prMessages[] = ' ' . $prClosed . ' ' . $this->pluralize($prClosed,['закрыт','закрыто','закрытых']);
+            $prMessages[] = ' ' . $prClosed . ' ' . $this->pluralize($prClosed, ['закрыт', 'закрыто', 'закрытых']);
         }
 
         $this->message .= PHP_EOL . 'PR:';
@@ -184,6 +174,22 @@ final class Run
         } else {
             $this->message .= ' активности не было.';
         }
+    }
+
+    private function pluralize(int $count, array $titles): string
+    {
+        $remOf10 = $count % 10;
+        $remOf100 = $count % 100;
+
+        if ($remOf10 === 1 && $remOf100 !== 11) {
+            return $titles[0];
+        }
+
+        if ($remOf10 >= 2 && $remOf10 <= 4 && ($remOf100 < 10 || $remOf100 >= 20)) {
+            return $titles[1];
+        }
+
+        return $titles[2];
     }
 
     private function send(): void
