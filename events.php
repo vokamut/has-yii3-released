@@ -36,7 +36,7 @@ foreach ($events as $event) {
         continue;
     }
 
-    $eventDate = date('Y-m-d', strtotime($event['created_at']) + (60 * 60 * 3));
+    $eventDate = date('Y-m-d', strtotime($event['created_at']) + (60 * 60 * 3)); // Москва GMT+3
 
     if (array_key_exists($eventDate, $db) === false) {
         $db[$eventDate] = [
