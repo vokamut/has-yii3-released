@@ -2,7 +2,7 @@
 <img src="https://github.com/vokamut/has-yii3-released/actions/workflows/deploy.yml/badge.svg" alt="GitHub Actions Deploy">
 </p>
 
-# Бот для проверки статуса разработки Yii 3
+# Бот для проверки статуса разработки Yii 3 [@has_yii3_released](https://t.me/has_yii3_released)
 
 ## Установка
 
