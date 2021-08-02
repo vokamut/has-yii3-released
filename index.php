@@ -154,7 +154,7 @@ final class Run
         }
 
         if ($issueClosed !== 0) {
-            $issueMessages[] = ' ' . $issueClosed .' ' . $this->pluralize($issueOpened,['закрыт','закрыто','закрытых']);
+            $issueMessages[] = ' ' . $issueClosed .' ' . $this->pluralize($issueClosed,['закрыт','закрыто','закрытых']);
         }
 
         $this->message .= PHP_EOL . 'Issue:';
@@ -166,15 +166,15 @@ final class Run
         }
 
         if ($prOpened !== 0) {
-            $prMessages[] = ' ' . $prOpened .' ' . $this->pluralize($issueOpened,['открыт','открыто','открытых']);
+            $prMessages[] = ' ' . $prOpened .' ' . $this->pluralize($prOpened,['открыт','открыто','открытых']);
         }
 
         if ($prMerged !== 0) {
-            $prMessages[] = ' ' . $prMerged . ' ' . $this->pluralize($issueOpened,['принят','принято','принятых']);
+            $prMessages[] = ' ' . $prMerged . ' ' . $this->pluralize($prMerged,['принят','принято','принятых']);
         }
 
         if ($prClosed !== 0) {
-            $prMessages[] = ' ' . $prClosed . ' ' . $this->pluralize($issueOpened,['закрыт','закрыто','закрытых']);
+            $prMessages[] = ' ' . $prClosed . ' ' . $this->pluralize($prClosed,['закрыт','закрыто','закрытых']);
         }
 
         $this->message .= PHP_EOL . 'PR:';
