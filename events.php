@@ -24,9 +24,9 @@ $events = json_decode(file_get_contents('https://api.github.com/orgs/yiisoft/eve
     'http' => [
         'method' => 'GET',
         'header' => [
-            'User-Agent: PHP'
-        ]
-    ]
+            'User-Agent: PHP',
+        ],
+    ],
 ])), true);
 
 foreach ($events as $event) {
@@ -49,29 +49,35 @@ foreach ($events as $event) {
     }
 
     if ($event['type'] === 'IssuesEvent') {
-        if ($event['payload']['action'] === 'opened' || $event['payload']['action'] === 'reopened') {
-            if (in_array($event['id'], $db[$eventDate]['issue_opened'], true) === false) {
-                $db[$eventDate]['issue_opened'][] = $event['id'];
-            }
-        } elseif ($event['payload']['action'] === 'closed') {
-            if (in_array($event['id'], $db[$eventDate]['issue_closed'], true) === false) {
-                $db[$eventDate]['issue_closed'][] = $event['id'];
-            }
+        $action = $event['payload']['action'];
+
+        if (
+            ($action === 'opened' || $action === 'reopened') &&
+            in_array($event['id'], $db[$eventDate]['issue_opened'], true) === false
+        ) {
+            $db[$eventDate]['issue_opened'][] = $event['id'];
+        } elseif (
+            $action === 'closed' &&
+            in_array($event['id'], $db[$eventDate]['issue_closed'], true) === false
+        ) {
+            $db[$eventDate]['issue_closed'][] = $event['id'];
         }
     } elseif ($event['type'] === 'PullRequestEvent') {
-        if ($event['payload']['action'] === 'opened' || $event['payload']['action'] === 'reopened') {
-            if (in_array($event['id'], $db[$eventDate]['pr_opened'], true) === false) {
-                $db[$eventDate]['pr_opened'][] = $event['id'];
-            }
-        } elseif ($event['payload']['action'] === 'closed') {
-            if ($event['payload']['pull_request']['merged']) {
-                if (in_array($event['id'], $db[$eventDate]['pr_merged'], true) === false) {
-                    $db[$eventDate]['pr_merged'][] = $event['id'];
-                }
-            } else {
-                if (in_array($event['id'], $db[$eventDate]['pr_closed'], true) === false) {
-                    $db[$eventDate]['pr_closed'][] = $event['id'];
-                }
+        $action = $event['payload']['action'];
+
+        if (
+            ($action === 'opened' || $action === 'reopened') &&
+            in_array($event['id'], $db[$eventDate]['pr_opened'], true) === false
+        ) {
+            $db[$eventDate]['pr_opened'][] = $event['id'];
+        } elseif ($action === 'closed') {
+            if (
+                $event['payload']['pull_request']['merged'] &&
+                in_array($event['id'], $db[$eventDate]['pr_merged'], true) === false
+            ) {
+                $db[$eventDate]['pr_merged'][] = $event['id'];
+            } elseif (in_array($event['id'], $db[$eventDate]['pr_closed'], true) === false) {
+                $db[$eventDate]['pr_closed'][] = $event['id'];
             }
         }
     }

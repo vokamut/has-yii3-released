@@ -57,7 +57,7 @@ final class Run
 
     private function generateMessage(): void
     {
-        // Статус всх пакетор
+        // Статус всех пакетов
         $yii3ProgressHtml = file_get_contents('https://www.yiiframework.com/yii3-progress');
 
         preg_match('~<h2>Rele\w+ <b>(\d+)/(\d+)</b> pack\w+</h2>~', $yii3ProgressHtml, $matches);
@@ -109,7 +109,6 @@ final class Run
             $this->message .= ' ' . $this->emoji;
         }
 
-
         $this->message .= PHP_EOL . 'Прогресс всех пакетов: ' . $matches[1] . '/' . $matches[2] . ' (' . round($matches[1] / $matches[2] * 100) . '%)';
 
         if (
@@ -137,50 +136,41 @@ final class Run
         $prMerged = count($this->db[$yesterday]['pr_merged']);
         $prClosed = count($this->db[$yesterday]['pr_closed']);
 
+        $issueMessages = [];
+        $prMessages = [];
+
+        if ($issueOpened !== 0) {
+            $issueMessages[] = ' ' . $issueOpened . ' открыто';
+        }
+
+        if ($issueClosed !== 0) {
+            $issueMessages[] = ' ' . $issueClosed . ' закрыто';
+        }
+
         $this->message .= PHP_EOL . 'Issue:';
 
-        if ($issueOpened !== 0 || $issueClosed !== 0) {
-            if ($issueOpened !== 0) {
-                $this->message .= ' ' . $issueOpened . ' открыто';
-            }
-
-            if ($issueOpened !== 0 && $issueClosed !== 0) {
-                $this->message .= ',';
-            }
-
-            if ($issueClosed !== 0) {
-                $this->message .= ' ' . $issueClosed . ' закрыто';
-            }
-
-            $this->message .= '.';
+        if (count($issueMessages) > 0) {
+            $this->message .= implode(',', $issueMessages) . '.';
         } else {
             $this->message .= ' активности не было.';
         }
 
+        if ($prOpened !== 0) {
+            $prMessages[] = ' ' . $prOpened . ' открыто';
+        }
+
+        if ($prMerged !== 0) {
+            $prMessages[] = ' ' . $prMerged . ' принято';
+        }
+
+        if ($prClosed !== 0) {
+            $prMessages[] = ' ' . $prClosed . ' закрыто';
+        }
+
         $this->message .= PHP_EOL . 'PR:';
 
-        if ($prOpened !== 0 || $prMerged !== 0 || $prClosed !== 0) {
-            if ($prOpened !== 0) {
-                $this->message .= ' ' . $prOpened . ' открыто';
-            }
-
-            if ($prOpened !== 0 && $prMerged !== 0) {
-                $this->message .= ',';
-            }
-
-            if ($prMerged !== 0) {
-                $this->message .= ' ' . $prMerged . ' принято';
-            }
-
-            if ($prMerged !== 0 && $prClosed !== 0) {
-                $this->message .= ',';
-            }
-
-            if ($prClosed !== 0) {
-                $this->message .= ' ' . $prClosed . ' закрыто';
-            }
-
-            $this->message .= '.';
+        if (count($prMessages) > 0) {
+            $this->message .= implode(',', $prMessages) . '.';
         } else {
             $this->message .= ' активности не было.';
         }
