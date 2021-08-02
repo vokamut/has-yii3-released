@@ -150,7 +150,7 @@ final class Run
         $prMessages = [];
 
         if ($issueOpened !== 0) {
-            $issueMessages[] = ' ' . $issueOpened .' ' . $this->pluralize($issueOpened,['закрыт','закрыто','закрытых']);
+            $issueMessages[] = ' ' . $issueOpened .' ' . $this->pluralize($issueOpened,['открыт','открыто','открытых']);
         }
 
         if ($issueClosed !== 0) {
