@@ -27,7 +27,7 @@ final class Run
     public function __construct(bool $test)
     {
         if (file_exists($this->envFile) === false) {
-            throw new RuntimeException('env.json not found');
+            throw new RuntimeException('File [' . $this->envFile . '] not found');
         }
 
         $env = json_decode(file_get_contents($this->envFile), true);
