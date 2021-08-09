@@ -3,6 +3,10 @@ declare (strict_types=1);
 
 $dbFile = __DIR__ . '/db.json';
 
+$botLogins = [
+    'dependabot[bot]'
+];
+
 if (file_exists($dbFile)) {
     $db = json_decode(file_get_contents($dbFile), true);
 } else {
@@ -33,6 +37,10 @@ foreach ($events as $event) {
     $repo = str_replace('yiisoft/', '', $event['repo']['name']);
 
     if (in_array($repo, $reps, true) === false) {
+        continue;
+    }
+
+    if (in_array($event['actor']['login'], $botLogins, true)) {
         continue;
     }
 
