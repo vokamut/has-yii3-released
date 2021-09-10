@@ -96,7 +96,7 @@ final class Run
             }
         }
 
-        if ($matches[1] === $matches[2]) {
+        if ($appCount === $appReleased) {
             $this->message = 'ДА! ' . $this->emoji;
         }
 
