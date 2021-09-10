@@ -211,4 +211,4 @@ final class Run
     }
 }
 
-(new Run(array_key_exists(1, $argv)))->run();
+(new Run($argc > 1))->run();
