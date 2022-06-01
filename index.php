@@ -195,23 +195,23 @@ final class Run
             }
 
             if (array_key_exists('issue_opened', $data)) {
-                $append['release'] = count($data['issue_opened']);
+                $append['issuesOpen'] = count($data['issue_opened']);
             }
 
             if (array_key_exists('issue_closed', $data)) {
-                $append['issuesOpen'] = count($data['issue_closed']);
+                $append['issuesCloset'] = count($data['issue_closed']);
             }
 
             if (array_key_exists('pr_opened', $data)) {
-                $append['issuesCloset'] = count($data['pr_opened']);
+                $append['prOpen'] = count($data['pr_opened']);
             }
 
             if (array_key_exists('pr_closed', $data)) {
-                $append['prOpen'] = count($data['pr_closed']);
+                $append['prCloset'] = count($data['pr_closed']);
             }
 
             if (array_key_exists('pr_merged', $data)) {
-                $append['prCloset'] = count($data['pr_merged']);
+                $append['prMerged'] = count($data['pr_merged']);
             }
 
             $this->publicJsonData[] = $append;
