@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Прогресс релиза Yii 3</title>
+
+    <style>
+        #chartdiv {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+    <script>
+        fetch('/data.json')
+            .then((response) => {
+                const data = response.json();
+
+                am5.ready(function () {
+
+                    // Create root element
+                    // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+                    var root = am5.Root.new('chartdiv');
+
+                    // Set themes
+                    // https://www.amcharts.com/docs/v5/concepts/themes/
+                    root.setThemes([
+                        am5themes_Animated.new(root)
+                    ]);
+
+
+                    // Create chart
+                    // https://www.amcharts.com/docs/v5/charts/xy-chart/
+                    var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                        panX: false,
+                        panY: false,
+                        wheelY: 'none'
+                    }));
+
+                    chart.zoomOutButton.set('forceHidden', true);
+
+                    chart.get('colors').set('step', 2);
+
+                    // Create axes
+                    // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+                    var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+                        baseInterval: { timeUnit: 'day', count: 1 },
+                        renderer: am5xy.AxisRendererX.new(root, { minGridDistance: 0 }),
+                        tooltip: am5.Tooltip.new(root, {})
+                    }));
+
+                    xAxis.get("tooltipDateFormats")["day"] = "dd.MM.yyyy";
+
+                    var issuesOpenAxisRenderer = am5xy.AxisRendererY.new(root, {});
+                    issuesOpenAxisRenderer.grid.template.set('forceHidden', true);
+                    var issuesOpenAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                        renderer: issuesOpenAxisRenderer,
+                        tooltip: am5.Tooltip.new(root, {})
+                    }));
+
+                    var issuesClosetAxisRenderer = am5xy.AxisRendererY.new(root, {});
+                    issuesClosetAxisRenderer.grid.template.set('forceHidden', true);
+                    var issuesClosetAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                        renderer: issuesClosetAxisRenderer,
+                        tooltip: am5.Tooltip.new(root, {})
+                    }));
+
+                    var prOpenAxisRenderer = am5xy.AxisRendererY.new(root, {});
+                    prOpenAxisRenderer.grid.template.set('forceHidden', true);
+                    var prOpenAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                        renderer: prOpenAxisRenderer,
+                        tooltip: am5.Tooltip.new(root, {})
+                    }));
+
+                    var prClosetAxisRenderer = am5xy.AxisRendererY.new(root, {});
+                    prClosetAxisRenderer.grid.template.set('forceHidden', true);
+                    var prClosetAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                        renderer: prClosetAxisRenderer,
+                        tooltip: am5.Tooltip.new(root, {})
+                    }));
+
+                    var prMergedAxisRenderer = am5xy.AxisRendererY.new(root, {});
+                    prMergedAxisRenderer.grid.template.set('forceHidden', true);
+                    var prMergedAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                        renderer: prMergedAxisRenderer,
+                        tooltip: am5.Tooltip.new(root, {})
+                    }));
+
+                    var progressAxisRenderer = am5xy.AxisRendererY.new(root, {});
+                    progressAxisRenderer.grid.template.set('forceHidden', true);
+                    var progressAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                        renderer: progressAxisRenderer,
+                        forceHidden: true
+                    }));
+
+                    var releaseAxisRenderer = am5xy.AxisRendererY.new(root, {});
+                    releaseAxisRenderer.grid.template.set('forceHidden', true);
+                    var releaseAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                        renderer: releaseAxisRenderer,
+                        forceHidden: true
+                    }));
+
+                    // Create series
+                    // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+                    var issuesOpenSeries = chart.series.push(am5xy.ColumnSeries.new(root, {
+                        xAxis: xAxis,
+                        yAxis: issuesOpenAxis,
+                        valueYField: 'issuesOpen',
+                        valueXField: 'date',
+                        tooltip: am5.Tooltip.new(root, {
+                            labelText: '{valueY} issue открыто'
+                        })
+                    }));
+
+                    issuesOpenSeries.data.processor = am5.DataProcessor.new(root, {
+                        dateFields: ['date'],
+                        dateFormat: 'yyyy-MM-dd'
+                    });
+
+                    var issuesClosetSeries = chart.series.push(am5xy.ColumnSeries.new(root, {
+                        xAxis: xAxis,
+                        yAxis: issuesClosetAxis,
+                        valueYField: 'issuesCloset',
+                        valueXField: 'date',
+                        tooltip: am5.Tooltip.new(root, {
+                            labelText: '{valueY} issue закрыто'
+                        })
+                    }));
+
+                    issuesClosetSeries.data.processor = am5.DataProcessor.new(root, {
+                        dateFields: ['date'],
+                        dateFormat: 'yyyy-MM-dd'
+                    });
+                    var prOpenSeries = chart.series.push(am5xy.ColumnSeries.new(root, {
+                        xAxis: xAxis,
+                        yAxis: prOpenAxis,
+                        valueYField: 'prOpen',
+                        valueXField: 'date',
+                        tooltip: am5.Tooltip.new(root, {
+                            labelText: '{valueY} PR открыто'
+                        })
+                    }));
+
+                    prOpenSeries.data.processor = am5.DataProcessor.new(root, {
+                        dateFields: ['date'],
+                        dateFormat: 'yyyy-MM-dd'
+                    });
+                    var prClosetSeries = chart.series.push(am5xy.ColumnSeries.new(root, {
+                        xAxis: xAxis,
+                        yAxis: prClosetAxis,
+                        valueYField: 'prCloset',
+                        valueXField: 'date',
+                        tooltip: am5.Tooltip.new(root, {
+                            labelText: '{valueY} PR закрыто'
+                        })
+                    }));
+
+                    prClosetSeries.data.processor = am5.DataProcessor.new(root, {
+                        dateFields: ['date'],
+                        dateFormat: 'yyyy-MM-dd'
+                    });
+                    var prMergedSeries = chart.series.push(am5xy.ColumnSeries.new(root, {
+                        xAxis: xAxis,
+                        yAxis: prMergedAxis,
+                        valueYField: 'prMerged',
+                        valueXField: 'date',
+                        tooltip: am5.Tooltip.new(root, {
+                            labelText: '{valueY} PR слито'
+                        })
+                    }));
+
+                    prMergedSeries.data.processor = am5.DataProcessor.new(root, {
+                        dateFields: ['date'],
+                        dateFormat: 'yyyy-MM-dd'
+                    });
+
+                    var progressSeries = chart.series.push(am5xy.LineSeries.new(root, {
+                        xAxis: xAxis,
+                        yAxis: progressAxis,
+                        valueYField: 'progress',
+                        valueXField: 'date',
+                        tooltip: am5.Tooltip.new(root, {
+                            labelText: 'Прогресс {valueY}% {progressTitle}'
+                        })
+                    }));
+
+                    progressSeries.strokes.template.setAll({ strokeWidth: 1 });
+
+                    // Add circle bullet
+                    // https://www.amcharts.com/docs/v5/charts/xy-chart/series/#Bullets
+                    progressSeries.bullets.push(function () {
+                        var graphics = am5.Circle.new(root, {
+                            strokeWidth: 1,
+                            radius: 1,
+                            stroke: progressSeries.get('stroke'),
+                            fill: root.interfaceColors.get('background')
+                        });
+
+                        return am5.Bullet.new(root, {
+                            sprite: graphics
+                        });
+                    });
+
+                    var releaseSeries = chart.series.push(am5xy.LineSeries.new(root, {
+                        xAxis: xAxis,
+                        yAxis: releaseAxis,
+                        valueYField: 'release',
+                        valueXField: 'date',
+                        tooltip: am5.Tooltip.new(root, {
+                            labelText: 'Релиз {valueY}% {releaseTitle}'
+                        })
+                    }));
+
+                    releaseSeries.strokes.template.setAll({ strokeWidth: 1 });
+
+                    // Add circle bullet
+                    // https://www.amcharts.com/docs/v5/charts/xy-chart/series/#Bullets
+                    releaseSeries.bullets.push(function () {
+                        var graphics = am5.Circle.new(root, {
+                            strokeWidth: 1,
+                            radius: 1,
+                            stroke: releaseSeries.get('stroke'),
+                            fill: root.interfaceColors.get('background')
+                        });
+
+                        return am5.Bullet.new(root, {
+                            sprite: graphics
+                        });
+                    });
+
+                    // Add cursor
+                    // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+                    chart.set('cursor', am5xy.XYCursor.new(root, {
+                        xAxis: xAxis,
+                        yAxis: issuesOpenAxis
+                    }));
+                    chart.set('cursor', am5xy.XYCursor.new(root, {
+                        xAxis: xAxis,
+                        yAxis: issuesClosetAxis
+                    }));
+                    chart.set('cursor', am5xy.XYCursor.new(root, {
+                        xAxis: xAxis,
+                        yAxis: prOpenAxis
+                    }));
+                    chart.set('cursor', am5xy.XYCursor.new(root, {
+                        xAxis: xAxis,
+                        yAxis: prClosetAxis
+                    }));
+                    chart.set('cursor', am5xy.XYCursor.new(root, {
+                        xAxis: xAxis,
+                        yAxis: prMergedAxis
+                    }));
+
+
+                    issuesOpenSeries.data.setAll(data);
+                    issuesClosetSeries.data.setAll(data);
+                    prOpenSeries.data.setAll(data);
+                    prClosetSeries.data.setAll(data);
+                    prMergedSeries.data.setAll(data);
+                    progressSeries.data.setAll(data);
+                    releaseSeries.data.setAll(data);
+                    xAxis.data.setAll(data);
+
+                    // Make stuff animate on load
+                    // https://www.amcharts.com/docs/v5/concepts/animations/
+                    issuesOpenSeries.appear(1000);
+                    issuesClosetSeries.appear(1000);
+                    prOpenSeries.appear(1000);
+                    prClosetSeries.appear(1000);
+                    prMergedSeries.appear(1000);
+                    chart.appear(1000, 100);
+
+                }); // end am5.ready()
+            });
+    </script>
+</head>
+<body>
+Прогресс релиза Yii 3
+<div id="chartdiv"></div>
+</body>
+</html>

@@ -7,6 +7,7 @@ final class Run
 
     private $envFile = __DIR__ . '/env.json';
     private $dbFile = __DIR__ . '/db.json';
+    private $publicDbFile = __DIR__ . '/public/db.json';
 
     private $db = [
         'common_count' => 0,
@@ -14,6 +15,8 @@ final class Run
         'app_count' => 0,
         'app_released' => 0,
     ];
+
+    private $publicJsonData = [];
 
     private $message = 'Нет.';
 
@@ -48,10 +51,14 @@ final class Run
     public function run(): void
     {
         $this->generateMessage();
+        $this->generatePublicDb();
         $this->send();
 
         if (!$this->test) {
+            krsort($this->db);
+
             file_put_contents($this->dbFile, json_encode($this->db, JSON_PRETTY_PRINT));
+            file_put_contents($this->publicDbFile, json_encode($this->publicJsonData, JSON_PRETTY_PRINT));
         }
     }
 
@@ -102,9 +109,12 @@ final class Run
 
         $this->message .= PHP_EOL . 'Прогресс: ' . $appReleased . '/' . $appCount . ' (' . round($appReleased / $appCount * 100) . '%)';
 
+        $today = date('Y-m-d');
+        $yesterday = date('Y-m-d', time() - (60 * 60 * 24));
+
         if (
-            $this->db['app_count'] !== $appCount ||
-            $this->db['app_released'] !== $appReleased
+            $this->db[$yesterday]['app_count'] !== $appCount ||
+            $this->db[$yesterday]['app_released'] !== $appReleased
         ) {
             $this->message .= ' ' . $this->emoji;
         }
@@ -112,22 +122,16 @@ final class Run
         $this->message .= PHP_EOL . 'Прогресс всех пакетов: ' . $matches[1] . '/' . $matches[2] . ' (' . round($matches[1] / $matches[2] * 100) . '%)';
 
         if (
-            $this->db['common_released'] !== (int)$matches[1] ||
-            $this->db['common_count'] !== (int)$matches[2]
+            $this->db[$yesterday]['common_released'] !== (int)$matches[1] ||
+            $this->db[$yesterday]['common_count'] !== (int)$matches[2]
         ) {
             $this->message .= ' ' . $this->emoji;
         }
 
-        $this->db['common_released'] = (int)$matches[1];
-        $this->db['common_count'] = (int)$matches[2];
-        $this->db['app_count'] = $appCount;
-        $this->db['app_released'] = $appReleased;
-
-        $yesterday = date('Y-m-d', time() - (60 * 60 * 24));
-
-        if (array_key_exists($yesterday, $this->db) === false) {
-            return;
-        }
+        $this->db[$today]['common_released'] = (int)$matches[1];
+        $this->db[$today]['common_count'] = (int)$matches[2];
+        $this->db[$today]['app_count'] = $appCount;
+        $this->db[$today]['app_released'] = $appReleased;
 
         // Статус PR и Issue
         $issueOpened = count($this->db[$yesterday]['issue_opened']);
@@ -173,6 +177,44 @@ final class Run
             $this->message .= implode(',', $prMessages) . '.';
         } else {
             $this->message .= ' активности не было.';
+        }
+    }
+
+    private function generatePublicDb(): void
+    {
+        foreach ($this->db as $date => $data) {
+            $append = [
+                'date' => $date,
+                'progress' => round($data['common_released'] / $data['common_count'] * 100),
+                'progressTitle' => $data['common_released'] . ' / ' . $data['common_count']
+            ];
+
+            if (array_key_exists('app_released', $data)) {
+                $append['release'] = round($data['app_released'] / $data['app_count'] * 100);
+                $append['releaseTitle'] = $data['app_released'] . ' / ' . $data['app_count'];
+            }
+
+            if (array_key_exists('issue_opened', $data)) {
+                $append['release'] = count($data['issue_opened']);
+            }
+
+            if (array_key_exists('issue_closed', $data)) {
+                $append['issuesOpen'] = count($data['issue_closed']);
+            }
+
+            if (array_key_exists('pr_opened', $data)) {
+                $append['issuesCloset'] = count($data['pr_opened']);
+            }
+
+            if (array_key_exists('pr_closed', $data)) {
+                $append['prOpen'] = count($data['pr_closed']);
+            }
+
+            if (array_key_exists('pr_merged', $data)) {
+                $append['prCloset'] = count($data['pr_merged']);
+            }
+
+            $this->publicJsonData[] = $append;
         }
     }
 
