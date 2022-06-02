@@ -187,6 +187,8 @@ final class Run
                 'date' => $date,
                 'progress' => round($data['common_released'] / $data['common_count'] * 100),
                 'progressTitle' => $data['common_released'] . ' / ' . $data['common_count'],
+                'release' => round($data['common_released'] / $data['common_count'] * 100),
+                'releaseTitle' => $data['common_released'] . ' / ' . $data['common_count'],
                 'issuesOpen' => 0,
                 'issuesCloset' => 0,
                 'prOpen' => 0,
