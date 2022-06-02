@@ -55,7 +55,7 @@ final class Run
         $this->send();
 
         if (!$this->test) {
-            krsort($this->db);
+            ksort($this->db);
 
             file_put_contents($this->dbFile, json_encode($this->db, JSON_PRETTY_PRINT));
             file_put_contents($this->publicDbFile, json_encode($this->publicJsonData, JSON_PRETTY_PRINT));
@@ -186,7 +186,12 @@ final class Run
             $append = [
                 'date' => $date,
                 'progress' => round($data['common_released'] / $data['common_count'] * 100),
-                'progressTitle' => $data['common_released'] . ' / ' . $data['common_count']
+                'progressTitle' => $data['common_released'] . ' / ' . $data['common_count'],
+                'issuesOpen' => 0,
+                'issuesCloset' => 0,
+                'prOpen' => 0,
+                'prCloset' => 0,
+                'prMerged' => 0,
             ];
 
             if (array_key_exists('app_released', $data)) {
