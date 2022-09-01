@@ -56,6 +56,26 @@ foreach ($events as $event) {
         ];
     }
 
+    if (array_key_exists('issue_opened', $db[$eventDate]) === false) {
+        $db[$eventDate]['issue_opened'] = [];
+    }
+
+    if (array_key_exists('issue_closed', $db[$eventDate]) === false) {
+        $db[$eventDate]['issue_closed'] = [];
+    }
+
+    if (array_key_exists('pr_opened', $db[$eventDate]) === false) {
+        $db[$eventDate]['pr_opened'] = [];
+    }
+
+    if (array_key_exists('pr_closed', $db[$eventDate]) === false) {
+        $db[$eventDate]['pr_closed'] = [];
+    }
+
+    if (array_key_exists('pr_merged', $db[$eventDate]) === false) {
+        $db[$eventDate]['pr_merged'] = [];
+    }
+
     if ($event['type'] === 'IssuesEvent') {
         $action = $event['payload']['action'];
 
