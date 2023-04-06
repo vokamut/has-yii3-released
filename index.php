@@ -183,6 +183,15 @@ final class Run
     private function generatePublicDb(): void
     {
         foreach ($this->db as $date => $data) {
+            if (
+                !array_key_exists('common_count', $data) ||
+                (int)$data['common_count'] === 0 ||
+                !array_key_exists('common_released', $data) ||
+                (int)$data['common_released'] === 0
+            ) {
+                continue;
+            }
+
             $append = [
                 'date' => $date,
                 'progress' => round($data['common_released'] / $data['common_count'] * 100),
