@@ -20,7 +20,7 @@ if (file_exists($dbFile)) {
 
 $repsHtml = file_get_contents('https://www.yiiframework.com/status/3.0');
 
-preg_match_all('~<tr data-key="\d+"><td><a href="https://github.com/yiisoft/(.+?)/">~', $repsHtml, $matches);
+preg_match_all('~<a href="https://github.com/yiisoft/(.+?)/">~', $repsHtml, $matches);
 
 $reps = $matches[1];
 
