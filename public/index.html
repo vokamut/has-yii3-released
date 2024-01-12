@@ -100,6 +100,13 @@
                     tooltip: am5.Tooltip.new(root, {})
                 }));
 
+                var prRejectedAxisRenderer = am5xy.AxisRendererY.new(root, {});
+                prRejectedAxisRenderer.grid.template.set('forceHidden', true);
+                var prRejectedAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                    renderer: prRejectedAxisRenderer,
+                    tooltip: am5.Tooltip.new(root, {})
+                }));
+
                 var prMergedAxisRenderer = am5xy.AxisRendererY.new(root, {});
                 prMergedAxisRenderer.grid.template.set('forceHidden', true);
                 var prMergedAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
@@ -180,6 +187,20 @@
                     dateFields: ['date'],
                     dateFormat: 'yyyy-MM-dd'
                 });
+                var prRejectedSeries = chart.series.push(am5xy.ColumnSeries.new(root, {
+                    xAxis: xAxis,
+                    yAxis: prRejectedAxis,
+                    valueYField: 'prRejected',
+                    valueXField: 'date',
+                    tooltip: am5.Tooltip.new(root, {
+                        labelText: '{valueY} PR закрыто'
+                    })
+                }));
+
+                prRejectedSeries.data.processor = am5.DataProcessor.new(root, {
+                    dateFields: ['date'],
+                    dateFormat: 'yyyy-MM-dd'
+                });
                 var prMergedSeries = chart.series.push(am5xy.ColumnSeries.new(root, {
                     xAxis: xAxis,
                     yAxis: prMergedAxis,
@@ -246,6 +267,10 @@
                 }));
                 chart.set('cursor', am5xy.XYCursor.new(root, {
                     xAxis: xAxis,
+                    yAxis: prRejectedAxis
+                }));
+                chart.set('cursor', am5xy.XYCursor.new(root, {
+                    xAxis: xAxis,
                     yAxis: prMergedAxis
                 }));
                 chart.set('cursor', am5xy.XYCursor.new(root, {
@@ -262,6 +287,7 @@
                 issuesClosetSeries.data.setAll(data);
                 prOpenSeries.data.setAll(data);
                 prClosetSeries.data.setAll(data);
+                prRejectedSeries.data.setAll(data);
                 prMergedSeries.data.setAll(data);
                 progressSeries.data.setAll(data);
                 releaseSeries.data.setAll(data);
@@ -273,6 +299,7 @@
                 issuesClosetSeries.appear(1000);
                 prOpenSeries.appear(1000);
                 prClosetSeries.appear(1000);
+                prRejectedSeries.appear(1000);
                 prMergedSeries.appear(1000);
                 progressSeries.appear(1000);
                 releaseSeries.appear(1000);

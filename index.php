@@ -138,7 +138,7 @@ final class Run
         $issueClosed = count($this->db[$yesterday]['issue_closed']);
         $prOpened = count($this->db[$yesterday]['pr_opened']);
         $prMerged = count($this->db[$yesterday]['pr_merged']);
-        $prClosed = count($this->db[$yesterday]['pr_closed']);
+        $prRejected = count($this->db[$yesterday]['pr_rejected']);
 
         $issueMessages = [];
         $prMessages = [];
@@ -167,8 +167,8 @@ final class Run
             $prMessages[] = ' ' . $prMerged . ' ' . $this->pluralize($prMerged, ['принят', 'принято', 'принятых']);
         }
 
-        if ($prClosed !== 0) {
-            $prMessages[] = ' ' . $prClosed . ' ' . $this->pluralize($prClosed, ['закрыт', 'закрыто', 'закрытых']);
+        if ($prRejected !== 0) {
+            $prMessages[] = ' ' . $prRejected . ' ' . $this->pluralize($prRejected, ['отклонен', 'отклонено', 'отклоненных']);
         }
 
         $this->message .= PHP_EOL . 'PR:';
@@ -202,6 +202,7 @@ final class Run
                 'issuesCloset' => 0,
                 'prOpen' => 0,
                 'prCloset' => 0,
+                'prRejected' => 0,
                 'prMerged' => 0,
             ];
 
@@ -224,6 +225,10 @@ final class Run
 
             if (array_key_exists('pr_closed', $data)) {
                 $append['prCloset'] = count($data['pr_closed']);
+            }
+
+            if (array_key_exists('pr_rejected', $data)) {
+                $append['prRejected'] = count($data['pr_rejected']);
             }
 
             if (array_key_exists('pr_merged', $data)) {

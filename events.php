@@ -52,6 +52,7 @@ foreach ($events as $event) {
             'issue_closed' => [],
             'pr_opened' => [],
             'pr_closed' => [],
+            'pr_rejected' => [],
             'pr_merged' => [],
         ];
     }
@@ -70,6 +71,10 @@ foreach ($events as $event) {
 
     if (array_key_exists('pr_closed', $db[$eventDate]) === false) {
         $db[$eventDate]['pr_closed'] = [];
+    }
+
+    if (array_key_exists('pr_rejected', $db[$eventDate]) === false) {
+        $db[$eventDate]['pr_rejected'] = [];
     }
 
     if (array_key_exists('pr_merged', $db[$eventDate]) === false) {
@@ -106,6 +111,13 @@ foreach ($events as $event) {
                 $db[$eventDate]['pr_merged'][] = $event['id'];
             } elseif (in_array($event['id'], $db[$eventDate]['pr_closed'], true) === false) {
                 $db[$eventDate]['pr_closed'][] = $event['id'];
+            }
+
+            if (
+                !$event['payload']['pull_request']['merged'] &&
+                in_array($event['id'], $db[$eventDate]['pr_rejected'], true) === false
+            ) {
+                $db[$eventDate]['pr_rejected'][] = $event['id'];
             }
         }
     }
