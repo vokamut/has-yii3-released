@@ -108,6 +108,8 @@ final class Run
         $yesterday = date('Y-m-d', time() - (60 * 60 * 24));
 
         if (
+            array_key_exists('app_count', $this->db[$yesterday]) &&
+            array_key_exists('app_released', $this->db[$yesterday]) &&
             $this->db[$yesterday]['app_count'] !== 0 &&
             $this->db[$yesterday]['app_released'] !== 0 &&
             (
@@ -121,6 +123,8 @@ final class Run
         $this->message .= PHP_EOL . 'Прогресс всех пакетов: ' . $matches[1] . '/' . $matches[2] . ' (' . round($matches[1] / $matches[2] * 100) . '%)';
 
         if (
+            array_key_exists('common_released', $this->db[$yesterday]) &&
+            array_key_exists('common_count', $this->db[$yesterday]) &&
             $this->db[$yesterday]['common_released'] !== 0 &&
             $this->db[$yesterday]['common_count'] !== 0 &&
             (
