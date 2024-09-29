@@ -9,12 +9,7 @@ final class Run
     private $dbFile = __DIR__ . '/db.json';
     private $publicDbFile = __DIR__ . '/public/db.json';
 
-    private $db = [
-        'common_count' => 0,
-        'common_released' => 0,
-        'app_count' => 0,
-        'app_released' => 0,
-    ];
+    private $db = [];
 
     private $publicJsonData = [];
 
@@ -113,8 +108,12 @@ final class Run
         $yesterday = date('Y-m-d', time() - (60 * 60 * 24));
 
         if (
-            $this->db[$yesterday]['app_count'] !== $appCount ||
-            $this->db[$yesterday]['app_released'] !== $appReleased
+            $this->db[$yesterday]['app_count'] !== 0 &&
+            $this->db[$yesterday]['app_released'] !== 0 &&
+            (
+                $this->db[$yesterday]['app_count'] !== $appCount ||
+                $this->db[$yesterday]['app_released'] !== $appReleased
+            )
         ) {
             $this->message .= ' ' . $this->emoji;
         }
@@ -122,8 +121,12 @@ final class Run
         $this->message .= PHP_EOL . 'Прогресс всех пакетов: ' . $matches[1] . '/' . $matches[2] . ' (' . round($matches[1] / $matches[2] * 100) . '%)';
 
         if (
-            $this->db[$yesterday]['common_released'] !== (int)$matches[1] ||
-            $this->db[$yesterday]['common_count'] !== (int)$matches[2]
+            $this->db[$yesterday]['common_released'] !== 0 &&
+            $this->db[$yesterday]['common_count'] !== 0 &&
+            (
+                $this->db[$yesterday]['common_released'] !== (int)$matches[1] ||
+                $this->db[$yesterday]['common_count'] !== (int)$matches[2]
+            )
         ) {
             $this->message .= ' ' . $this->emoji;
         }

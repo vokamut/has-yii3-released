@@ -10,12 +10,7 @@ $botLogins = [
 if (file_exists($dbFile)) {
     $db = json_decode(file_get_contents($dbFile), true);
 } else {
-    $db = [
-        'common_count' => 0,
-        'common_released' => 0,
-        'app_count' => 0,
-        'app_released' => 0,
-    ];
+    $db = [];
 }
 
 $repsHtml = file_get_contents('https://www.yiiframework.com/status/3.0');
@@ -54,6 +49,10 @@ foreach ($events as $event) {
             'pr_closed' => [],
             'pr_rejected' => [],
             'pr_merged' => [],
+            'common_count' => 0,
+            'common_released' => 0,
+            'app_count' => 0,
+            'app_released' => 0,
         ];
     }
 
