@@ -4,6 +4,8 @@
 
 # Бот для проверки статуса разработки Yii 3 [@has_yii3_released](https://t.me/has_yii3_released)
 
+Онлайн прогресс: https://hasyii3released.vokamut.ru
+
 ## Установка
 
 - Скопировать `env.example.json` в `env.json`, прописать там ключ бота и ID чатов.
