@@ -68,6 +68,9 @@ final class Run
             return;
         }
 
+        $allReleased = $matches[1];
+        $allCount = $matches[2];
+
         // Статус релиза app
         $yii3app = json_decode(file_get_contents('https://raw.githubusercontent.com/yiisoft/app/master/composer.json'), true);
 
@@ -98,7 +101,7 @@ final class Run
             }
         }
 
-        if ($appCount === $appReleased) {
+        if ($allCount === $allReleased) {
             $this->message = 'ДА! ' . $this->emoji;
         }
 
@@ -120,7 +123,7 @@ final class Run
             $this->message .= ' ' . $this->emoji;
         }
 
-        $this->message .= PHP_EOL . 'Прогресс всех пакетов: ' . $matches[1] . '/' . $matches[2] . ' (' . round($matches[1] / $matches[2] * 100) . '%)';
+        $this->message .= PHP_EOL . 'Прогресс всех пакетов: ' . $allReleased . '/' . $allCount . ' (' . round($allReleased / $allCount * 100) . '%)';
 
         if (
             array_key_exists('common_released', $this->db[$yesterday]) &&
@@ -128,15 +131,15 @@ final class Run
             $this->db[$yesterday]['common_released'] !== 0 &&
             $this->db[$yesterday]['common_count'] !== 0 &&
             (
-                $this->db[$yesterday]['common_released'] !== (int)$matches[1] ||
-                $this->db[$yesterday]['common_count'] !== (int)$matches[2]
+                $this->db[$yesterday]['common_released'] !== $allReleased ||
+                $this->db[$yesterday]['common_count'] !== $allCount
             )
         ) {
             $this->message .= ' ' . $this->emoji;
         }
 
-        $this->db[$today]['common_released'] = (int)$matches[1];
-        $this->db[$today]['common_count'] = (int)$matches[2];
+        $this->db[$today]['common_released'] = $allReleased;
+        $this->db[$today]['common_count'] = $allCount;
         $this->db[$today]['app_count'] = $appCount;
         $this->db[$today]['app_released'] = $appReleased;
 
