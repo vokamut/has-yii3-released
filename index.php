@@ -47,7 +47,7 @@ final class Run
     {
         $this->generateMessage();
         $this->generatePublicDb();
-        $this->send();
+        // $this->send();
 
         if (!$this->test) {
             ksort($this->db);
